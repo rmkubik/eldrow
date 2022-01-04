@@ -1,11 +1,11 @@
 {
   "name": "parcel-react-starter",
-  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "browserslist": "> 0.5%, last 2 versions, not dead, not ios_saf < 13",
   "version": "2.0.0",
   "description": "",
   "dependencies": {
     "functional-game-utils": "^2.4.0",
-    "parcel": "^2.0.0",
+    "parcel": "^2.0.1",
     "ramda": "^0.27.1",
     "ramda-adjunct": "^2.35.0",
     "react": "^16.13.1",
