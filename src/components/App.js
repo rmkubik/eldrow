@@ -66,15 +66,12 @@ const convertWordleInputMatrix = (wordleInput) => {
 const isLastRow = (matrix, row) => matrix.length - 1 === row;
 
 const App = () => {
-  const [wordleInput, setWordleInput] = useState(`Wordle 199 5/6
+  const [wordleInput, setWordleInput] = useState(`Wordle 198 3/6
 
-  ⬛🟨🟨🟨🟨
-  🟨⬛🟨🟨🟩
-  🟨⬛🟨🟨🟩
-  ⬛🟩⬛🟩🟩
-  🟩🟩⬛🟩🟩
+  ⬛⬛⬛🟩🟨
+  🟩⬛⬛🟩⬛
   🟩🟩🟩🟩🟩`);
-  const [answer, setAnswer] = useState("siege");
+  const [answer, setAnswer] = useState("truss");
   const [wordleMatrix, setWordleMatrix] = useState(
     convertWordleInputMatrix(wordleInput)
   );
