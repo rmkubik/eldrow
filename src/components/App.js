@@ -23,6 +23,10 @@ const theme = {
 };
 
 const GlobalStyle = createGlobalStyle`
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   body {
     color: white;
     font-family: "Helvetica";
@@ -178,6 +182,7 @@ const App = () => {
               return (
                 <Cell
                   key={JSON.stringify(location)}
+                  answer={answer}
                   value={value}
                   letter={letter}
                   location={location}
