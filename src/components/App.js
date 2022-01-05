@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   constructMatrixFromTemplate,
   fillMatrix,
@@ -13,7 +13,8 @@ import Grid from "./Grid";
 import Cell from "./Cell";
 import Center from "./Center";
 import WordleInput from "./WordleInput";
-import useKeyPress from "../hooks/useKeyPress";
+import useArrowNav from "../hooks/useArrowNav";
+import { base64ToUnicode } from "../common/base64";
 
 const WORDLE_HEADER_LENGTH = 2;
 const WORDLE_WORD_LENGTH = 5;
@@ -65,6 +66,15 @@ const convertWordleInputMatrix = (wordleInput) => {
 
 const isLastRow = (matrix, row) => matrix.length - 1 === row;
 
+const processCurrentParams = () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const answer = params.get("a");
+  const wordleInput = base64ToUnicode(params.get("p"));
+
+  return { answer, wordleInput };
+};
+
 const App = () => {
   const [wordleInput, setWordleInput] = useState(`Wordle 198 3/6
 
@@ -78,68 +88,8 @@ const App = () => {
   const [guesses, setGuesses] = useState(
     fillMatrix(getDimensions(wordleMatrix), " ")
   );
-  useKeyPress({
-    ArrowUp: (e) => {
-      e.preventDefault();
-
-      if (focusedLocation) {
-        document
-          .getElementById(
-            JSON.stringify({
-              row: Math.max(focusedLocation.row - 1, 0),
-              col: focusedLocation.col,
-            })
-          )
-          .focus();
-      }
-    },
-    ArrowDown: (e) => {
-      e.preventDefault();
-
-      if (focusedLocation) {
-        document
-          .getElementById(
-            JSON.stringify({
-              row: Math.min(focusedLocation.row + 1, wordleMatrix.length - 1),
-              col: focusedLocation.col,
-            })
-          )
-          .focus();
-      }
-    },
-    ArrowLeft: (e) => {
-      e.preventDefault();
-
-      if (focusedLocation) {
-        document
-          .getElementById(
-            JSON.stringify({
-              row: focusedLocation.row,
-              col: Math.max(focusedLocation.col - 1, 0),
-            })
-          )
-          .focus();
-      }
-    },
-    ArrowRight: (e) => {
-      e.preventDefault();
-
-      if (focusedLocation) {
-        document
-          .getElementById(
-            JSON.stringify({
-              row: focusedLocation.row,
-              col: Math.min(
-                focusedLocation.col + 1,
-                wordleMatrix[0].length - 1
-              ),
-            })
-          )
-          .focus();
-      }
-    },
-  });
   const [focusedLocation, setFocusedLocation] = useState(undefined);
+  useArrowNav({ focusedLocation, wordleMatrix });
 
   const setGuess = (location, value) => {
     const newGuesses = updateMatrix(location, value, guesses);
@@ -156,6 +106,27 @@ const App = () => {
     const newGuesses = fillMatrix(getDimensions(newWordleMatrix), " ");
     setGuesses(newGuesses);
   };
+
+  useEffect(() => {
+    const useParams = () => {
+      const paramValues = processCurrentParams();
+
+      console.log(paramValues.wordleInput);
+
+      setAnswer(paramValues.answer);
+      setWordleInput(paramValues.wordleInput);
+    };
+
+    useParams();
+
+    document.addEventListener("popstate", useParams);
+    document.addEventListener("load", useParams);
+
+    return () => {
+      document.removeEventListener("popstate", useParams);
+      document.removeEventListener("load", useParams);
+    };
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>

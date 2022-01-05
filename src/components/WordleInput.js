@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { unicodeToBase64 } from "../common/base64";
 
 const InputsContainer = styled.div`
   display: flex;
@@ -22,6 +23,12 @@ const InputsContainer = styled.div`
     background: none;
   }
 
+  span {
+    border: none;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
   textarea {
     height: 200px;
   }
@@ -33,10 +40,28 @@ const WordleInput = ({
   onAnswerChange,
   onWordleInputChange,
 }) => {
+  const [shouldShowCopyText, setShouldShowCopyText] = useState(false);
+
   return (
     <InputsContainer>
       <textarea onChange={onWordleInputChange}>{wordleInput}</textarea>
       <input value={answer} onChange={onAnswerChange} />
+      <button
+        onClick={async () => {
+          const params = new URLSearchParams();
+          params.set("a", answer);
+          params.set("p", unicodeToBase64(wordleInput));
+
+          const shareUrl = window.location.origin + "?" + params.toString();
+
+          await navigator.clipboard.writeText(shareUrl);
+
+          setShouldShowCopyText(true);
+        }}
+      >
+        SHARE
+      </button>
+      {shouldShowCopyText && <span>Copied Share URL to clipboard</span>}
       {/* <button>GENERATE ELDROW</button> */}
     </InputsContainer>
   );
