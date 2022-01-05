@@ -70,7 +70,11 @@ const processCurrentParams = () => {
   const params = new URLSearchParams(window.location.search);
 
   const answer = params.get("a");
-  const wordleInput = base64ToUnicode(params.get("p"));
+  let wordleInput;
+
+  if (params.get("p")) {
+    wordleInput = base64ToUnicode(params.get("p"));
+  }
 
   return { answer, wordleInput };
 };
