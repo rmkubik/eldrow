@@ -67,6 +67,25 @@ const convertWordleInputMatrix = (wordleInput) => {
 
 const isLastRow = (matrix, row) => matrix.length - 1 === row;
 
+const getNextFocusedLocation = (focusedLocation, guesses) => {
+  if (!focusedLocation) {
+    return;
+  }
+
+  if (focusedLocation.col + 1 < guesses[0].length) {
+    return { row: focusedLocation.row, col: focusedLocation.col + 1 };
+  }
+
+  // guesses[0].length - 1 is because guesses has an extra
+  // line that isn't used as that's where the answer
+  // goes
+  if (focusedLocation.row + 1 < guesses[0].length - 1 - 1 - 1) {
+    return { row: focusedLocation.row + 1, col: 0 };
+  }
+
+  return { row: 0, col: 0 };
+};
+
 const processCurrentParams = () => {
   const params = new URLSearchParams(window.location.search);
 
@@ -187,6 +206,19 @@ const App = () => {
                     }
 
                     setGuess(location, event.key);
+
+                    // We should advance to the next cell input after
+                    // we log our guess.
+                    const nextFocusedLocation = getNextFocusedLocation(
+                      focusedLocation,
+                      guesses
+                    );
+
+                    if (nextFocusedLocation) {
+                      document
+                        .getElementById(JSON.stringify(nextFocusedLocation))
+                        .focus();
+                    }
                   }}
                   onFocus={() => setFocusedLocation(location)}
                   onBlur={() => setFocusedLocation(undefined)}

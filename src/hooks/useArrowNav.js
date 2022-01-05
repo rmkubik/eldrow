@@ -24,7 +24,14 @@ const useArrowNav = ({ focusedLocation, wordleMatrix }) => {
           document
             .getElementById(
               JSON.stringify({
-                row: Math.min(focusedLocation.row + 1, wordleMatrix.length - 1),
+                row: Math.min(
+                  focusedLocation.row + 1,
+                  // One -1 is to avoid the edge of the screen
+                  // The second -1 is because the guesses matrix
+                  // includes a line for the answer, which the
+                  // player cannot edit.
+                  wordleMatrix.length - 1 - 1
+                ),
                 col: focusedLocation.col,
               })
             )
