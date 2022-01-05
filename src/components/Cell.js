@@ -91,6 +91,9 @@ const Cell = ({
       <input
         value={letter.toUpperCase()}
         id={JSON.stringify(location)}
+        onChange={() => {
+          /* We need to let React know this input is being controlled by adding an onChange handler. It doesn't know we're handling this with onKeyDown. */
+        }}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
         onBlur={onBlur}

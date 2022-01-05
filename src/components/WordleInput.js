@@ -44,8 +44,8 @@ const WordleInput = ({
 
   return (
     <InputsContainer>
-      <textarea onChange={onWordleInputChange}>{wordleInput}</textarea>
-      <input value={answer} onChange={onAnswerChange} />
+      <textarea onChange={onWordleInputChange} value={wordleInput} />
+      <input value={answer ?? ""} onChange={onAnswerChange} />
       <button
         onClick={async () => {
           const params = new URLSearchParams();

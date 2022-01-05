@@ -76,20 +76,13 @@ const processCurrentParams = () => {
 };
 
 const App = () => {
-  const [wordleInput, setWordleInput] = useState(`Wordle 198 3/6
-
-  ⬛⬛⬛🟩🟨
-  🟩⬛⬛🟩⬛
-  🟩🟩🟩🟩🟩`);
-  const [answer, setAnswer] = useState("truss");
-  const [wordleMatrix, setWordleMatrix] = useState(
-    convertWordleInputMatrix(wordleInput)
-  );
-  const [guesses, setGuesses] = useState(
-    fillMatrix(getDimensions(wordleMatrix), " ")
-  );
+  const [wordleInput, setWordleInput] = useState();
+  const [answer, setAnswer] = useState();
+  const [wordleMatrix, setWordleMatrix] = useState([["", "", "", "", ""]]);
+  const [guesses, setGuesses] = useState([[]]);
   const [focusedLocation, setFocusedLocation] = useState(undefined);
   useArrowNav({ focusedLocation, wordleMatrix });
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const setGuess = (location, value) => {
     const newGuesses = updateMatrix(location, value, guesses);
@@ -111,21 +104,34 @@ const App = () => {
     const useParams = () => {
       const paramValues = processCurrentParams();
 
-      console.log(paramValues.wordleInput);
+      let initialAnswer = "truss";
+      if (paramValues.answer) {
+        initialAnswer = paramValues.answer;
+      }
 
-      setAnswer(paramValues.answer);
-      setWordleInput(paramValues.wordleInput);
+      let initialWordleInput = `Wordle 198 3/6
+
+      ⬛⬛⬛🟩🟨
+      🟩⬛⬛🟩⬛
+      🟩🟩🟩🟩🟩`;
+      if (paramValues.wordleInput) {
+        initialWordleInput = paramValues.wordleInput;
+      }
+
+      setAnswer(initialAnswer);
+      updateWordle(initialWordleInput);
+      setIsLoaded(true);
     };
 
     useParams();
 
-    document.addEventListener("popstate", useParams);
-    document.addEventListener("load", useParams);
+    // document.addEventListener("popstate", useParams);
+    // document.addEventListener("load", useParams);
 
-    return () => {
-      document.removeEventListener("popstate", useParams);
-      document.removeEventListener("load", useParams);
-    };
+    // return () => {
+    //   document.removeEventListener("popstate", useParams);
+    //   document.removeEventListener("load", useParams);
+    // };
   }, []);
 
   return (
@@ -137,6 +143,10 @@ const App = () => {
           <Grid
             tiles={wordleMatrix}
             renderTile={(value, location) => {
+              if (!isLoaded) {
+                return <Cell key={JSON.stringify(location)} />;
+              }
+
               let letter = "";
 
               if (isLocationInBounds(guesses, location)) {
