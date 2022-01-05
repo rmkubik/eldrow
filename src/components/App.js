@@ -33,6 +33,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Helvetica";
     font-size: 2.5rem;
     background-color: black;
+    margin: 0;
   }
 
   h1 {
